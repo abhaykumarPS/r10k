@@ -59,12 +59,6 @@ test: prep
 		bundle exec --gemfile $$GEMFILE \
 		rspec spec
 
-push-image: prep
-	@docker push $(NAMESPACE)/r10k:$(VERSION)
-ifeq ($(IS_LATEST),true)
-	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
-endif
-
 push-readme:
 	@docker pull sheogorath/readme-to-dockerhub
 	@docker run --rm \
