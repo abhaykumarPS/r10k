@@ -66,11 +66,8 @@ est: prep
 		bundle exec --gemfile $$GEMFILE \
 		rspec spec
 
-push-image: prep
-	@docker push $(NAMESPACE)/r10k:latest
-ifeq ($(IS_LATEST),true)
-	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
-endif
+push-image:
+	docker buildx build --platform linux/arm64,linux/amd64 -t abhay900/r10k:latest -f r10k/$(dockerfile) $(dockerfile_context)
 
 push-readme:
 	@docker pull sheogorath/readme-to-dockerhub
