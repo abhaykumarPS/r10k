@@ -66,16 +66,6 @@ ifeq ($(IS_LATEST),true)
 	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
 endif
 
-push-readme:
-	@docker pull sheogorath/readme-to-dockerhub
-	@docker run --rm \
-		-v $(PWD)/README.md:/data/README.md \
-		-e DOCKERHUB_USERNAME="$(DOCKERHUB_USERNAME)" \
-		-e DOCKERHUB_PASSWORD="$(DOCKERHUB_PASSWORD)" \
-		-e DOCKERHUB_REPO_PREFIX=abhay900 \
-		-e DOCKERHUB_REPO_NAME=r10k \
-		sheogorath/readme-to-dockerhub
-
 publish:
 	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) $(dockerfile_context)
 	@docker push $(NAMESPACE)/r10k:$(VERSION) 
