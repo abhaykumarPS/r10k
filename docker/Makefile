@@ -67,7 +67,6 @@ ifeq ($(IS_LATEST),true)
 endif
 
 publish:
-	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) $(dockerfile_context)
-	@docker push $(NAMESPACE)/r10k:$(VERSION) 
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) $(dockerfile_context) 
 
 .PHONY: lint build test prep publish push-image push-readme
