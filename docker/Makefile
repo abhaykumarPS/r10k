@@ -89,5 +89,6 @@ push-readme:
 
 publish: 
 	docker buildx build --platform linux/arm64,linux/amd64 --file r10k/$(dockerfile) --tag $(NAMESPACE)/r10k:$(VERSION) $(dockerfile_context)
+	push-image
 
 .PHONY: lint build test prep publish push-image push-readme
