@@ -48,6 +48,18 @@ else
 	@docker run --rm -v $(PWD)/r10k/$(dockerfile):/Dockerfile -i $(hadolint_container) $(hadolint_command) Dockerfile
 endif
 
+build: prep
+	docker pull alpine:$(alpine_version)
+	docker buildx build \
+		${DOCKER_BUILD_FLAGS} \
+		--load \
+		--build-arg alpine_version=$(alpine_version) \
+		--build-arg vcs_ref=$(vcs_ref) \
+		--build-arg build_date=$(build_date) \
+		--build-arg version=$(VERSION) \
+		--build-arg pupperware_analytics_stream=$(PUPPERWARE_ANALYTICS_STREAM) \
+		--file r10k/$(dockerfile) \
+		--tag $(NAMESPACE)/r10k:$(VERSION) $(dockerfile_context)
 build: 
 	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) $(dockerfile_context)
 
@@ -67,7 +79,8 @@ push-readme:
 		-e DOCKERHUB_REPO_NAME=r10k \
 		sheogorath/readme-to-dockerhub
 
-publish: 
-	@docker push $(NAMESPACE)/r10k:$(VERSION) --file r10k/$(dockerfile) $(dockerfile_context)
+publish:
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) $(dockerfile_context)
+	@docker push $(NAMESPACE)/r10k:$(VERSION) 
 
 .PHONY: lint build test prep publish push-image push-readme
