@@ -60,10 +60,30 @@ build:
 		--build-arg pupperware_analytics_stream=$(PUPPERWARE_ANALYTICS_STREAM) \
 		--file r10k/$(dockerfile) \
 		--tag $(NAMESPACE)/r10k:$(VERSION) $(dockerfile_context)
+est: prep
+	@bundle install --path $$BUNDLE_PATH --gemfile $$GEMFILE --with test
+	@bundle update
+	@PUPPET_TEST_DOCKER_IMAGE=$(NAMESPACE)/r10k:$(VERSION) \
+		bundle exec --gemfile $$GEMFILE \
+		rspec spec
 
-push-image: 
-	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:latest -f r10k/$(dockerfile) $(dockerfile_context)
+push-image: prep
+	@docker push $(NAMESPACE)/r10k:$(VERSION)
+ifeq ($(IS_LATEST),true)
+	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
+endif
 
-publish: push-image 
+push-readme:
+	@docker pull sheogorath/readme-to-dockerhub
+	@docker run --rm \
+		-v $(PWD)/README.md:/data/README.md \
+		-e DOCKERHUB_USERNAME="$(DOCKERHUB_USERNAME)" \
+		-e DOCKERHUB_PASSWORD="$(DOCKERHUB_PASSWORD)" \
+		-e DOCKERHUB_REPO_PREFIX=puppet \
+		-e DOCKERHUB_REPO_NAME=r10k \
+		sheogorath/readme-to-dockerhub
+
+publish: push-image push-readme
+ 
 	
 .PHONY: lint build test prep publish push-image push-readme
