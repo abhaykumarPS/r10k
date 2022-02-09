@@ -52,14 +52,14 @@ jobs:
           else
             echo "Skipping release container building and testing"
           fi
-      - name: Publish container
+      - name: Publish release container
+        env:
+          IS_RELEASE: true
         working-directory: docker
         run: |
-          make publish
-    
-      - name: Publish container
-        working-directory: docker
-        run: |
-          docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
-          make publish
+          if make prep; then
+            make publish
+          else
+            echo "Skipping release container publishing"
+          fi
      
