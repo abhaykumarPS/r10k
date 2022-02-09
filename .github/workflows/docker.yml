@@ -42,6 +42,20 @@ jobs:
         working-directory: docker
         run: |
           make publish
+      - name: Build release container
+        env:
+          IS_RELEASE: true
+        working-directory: docker
+        run: |
+          if make prep; then
+            make lint build test
+          else
+            echo "Skipping release container building and testing"
+          fi
+      - name: Publish container
+        working-directory: docker
+        run: |
+          make publish
     
       - name: Publish container
         working-directory: docker
