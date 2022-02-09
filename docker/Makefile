@@ -48,7 +48,7 @@ else
 	@docker run --rm -v $(PWD)/r10k/$(dockerfile):/Dockerfile -i $(hadolint_container) $(hadolint_command) Dockerfile
 endif
 
-build: prep
+build: 
 	docker pull alpine:$(alpine_version)
 	docker buildx build \
 		--platform linux/arm64,linux/amd64 \
