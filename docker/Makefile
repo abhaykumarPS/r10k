@@ -51,7 +51,8 @@ endif
 build: 
 	docker pull alpine:$(alpine_version)
 	docker buildx build \
-		--platform linux/arm64,linux/amd64 \
+		${DOCKER_BUILD_FLAGS} \
+		--load \
 		--build-arg alpine_version=$(alpine_version) \
 		--build-arg vcs_ref=$(vcs_ref) \
 		--build-arg build_date=$(build_date) \
@@ -60,11 +61,8 @@ build:
 		--file r10k/$(dockerfile) \
 		--tag $(NAMESPACE)/r10k:$(VERSION) $(dockerfile_context)
 
-push-image: prep
-	@docker push $(NAMESPACE)/r10k:$(VERSION)
-ifeq ($(IS_LATEST),true)
-	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
-endif
+push-image: 
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:latest -f r10k/$(dockerfile) $(dockerfile_context)
 
 publish: push-image 
 	
