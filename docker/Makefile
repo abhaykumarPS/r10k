@@ -1,5 +1,5 @@
 PUPPERWARE_ANALYTICS_STREAM ?= dev
-NAMESPACE ?= puppet
+NAMESPACE ?= abhay900
 git_describe = $(shell git describe --tags)
 vcs_ref := $(shell git rev-parse HEAD)
 build_date := $(shell date -u +%FT%T)
@@ -71,11 +71,9 @@ test: prep
 		bundle exec --gemfile $$GEMFILE \
 		rspec spec
 
-push-image: prep
-	@docker push $(NAMESPACE)/r10k:$(VERSION)
-ifeq ($(IS_LATEST),true)
-	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
-endif
+push-image: 
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(LATEST_VERSION) --push $(dockerfile_context)
+
 
 push-readme:
 	@docker pull sheogorath/readme-to-dockerhub
