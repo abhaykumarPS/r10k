@@ -49,7 +49,7 @@ else
 endif
 
 build: 
-	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:latest --push $(dockerfile_context)
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:latest --push .
 
 
 test: prep
