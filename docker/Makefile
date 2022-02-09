@@ -67,7 +67,7 @@ est: prep
 		rspec spec
 
 push-image: prep
-	@docker push $(NAMESPACE)/r10k:$(VERSION)
+	@docker push $(NAMESPACE)/r10k:latest
 ifeq ($(IS_LATEST),true)
 	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
 endif
