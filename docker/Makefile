@@ -51,8 +51,7 @@ endif
 build: 
 	docker pull alpine:$(alpine_version)
 	docker buildx build \
-		${DOCKER_BUILD_FLAGS} \
-		--load \
+		--platform linux/arm64,linux/amd64 \
 		--build-arg alpine_version=$(alpine_version) \
 		--build-arg vcs_ref=$(vcs_ref) \
 		--build-arg build_date=$(build_date) \
@@ -79,7 +78,7 @@ push-readme:
 		-v $(PWD)/README.md:/data/README.md \
 		-e DOCKERHUB_USERNAME="$(DOCKERHUB_USERNAME)" \
 		-e DOCKERHUB_PASSWORD="$(DOCKERHUB_PASSWORD)" \
-		-e DOCKERHUB_REPO_PREFIX=puppet \
+		-e DOCKERHUB_REPO_PREFIX=abhay900 \
 		-e DOCKERHUB_REPO_NAME=r10k \
 		sheogorath/readme-to-dockerhub
 
