@@ -20,7 +20,7 @@ ARG pupperware_analytics_stream="dev"
 # required to schedule runs of "r10k" in K8s
 ARG supercronic_version="0.1.9"
 ARG supercronic_sha1sum="5ddf8ea26b56d4a7ff6faecdd8966610d5cb9d85"
-ARG supercronic="supercronic-linux-arm64"
+ARG supercronic="supercronic-linux-amd64"
 ARG supercronic_url="https://github.com/aptible/supercronic/releases/download/v$supercronic_version/$supercronic"
 
 LABEL org.label-schema.maintainer="Puppet Release Team <release@puppet.com>" \
