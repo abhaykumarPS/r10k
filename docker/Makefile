@@ -51,13 +51,6 @@ endif
 build: 
 	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) $(dockerfile_context)
 
-test: prep
-	@bundle install --path $$BUNDLE_PATH --gemfile $$GEMFILE --with test
-	@bundle update
-	@PUPPET_TEST_DOCKER_IMAGE=$(NAMESPACE)/r10k:$(VERSION) \
-		bundle exec --gemfile $$GEMFILE \
-		rspec spec
-
 push-image: prep
 	@docker push $(NAMESPACE)/r10k:$(VERSION)
 ifeq ($(IS_LATEST),true)
