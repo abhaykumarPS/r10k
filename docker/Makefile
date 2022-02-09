@@ -68,6 +68,6 @@ push-readme:
 		sheogorath/readme-to-dockerhub
 
 publish: 
-	@docker push $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) $(dockerfile_context)
+	@docker push $(NAMESPACE)/r10k:$(VERSION) --file r10k/$(dockerfile) $(dockerfile_context)
 
 .PHONY: lint build test prep publish push-image push-readme
