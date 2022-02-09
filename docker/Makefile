@@ -51,7 +51,8 @@ endif
 build: 
 	docker pull alpine:$(alpine_version)
 	docker buildx build \
-		--platform linux/arm64,linux/amd64 \
+		${DOCKER_BUILD_FLAGS} \
+		--load \
 		--build-arg alpine_version=$(alpine_version) \
 		--build-arg vcs_ref=$(vcs_ref) \
 		--build-arg build_date=$(build_date) \
@@ -59,7 +60,7 @@ build:
 		--build-arg pupperware_analytics_stream=$(PUPPERWARE_ANALYTICS_STREAM) \
 		--file r10k/$(dockerfile) \
 		--tag $(NAMESPACE)/r10k:$(VERSION) $(dockerfile_context)
-	docker buildx build --platform linux/arm64,linux/amd64 -t abhay900/r10k:latest -f r10k/$(dockerfile) $(dockerfile_context)
+	
 est: prep
 	@bundle install --path $$BUNDLE_PATH --gemfile $$GEMFILE --with test
 	@bundle update
@@ -73,7 +74,8 @@ ifeq ($(IS_LATEST),true)
 	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
 endif	
 
-publish: push-image push-readme
+publish: 
+	docker buildx build --platform linux/arm64,linux/amd64 -t abhay900/r10k:latest -f r10k/$(dockerfile) $(dockerfile_context)
  
 	
 .PHONY: lint build test prep publish push-image push-readme
