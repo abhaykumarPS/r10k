@@ -60,8 +60,6 @@ build: prep
 		--build-arg pupperware_analytics_stream=$(PUPPERWARE_ANALYTICS_STREAM) \
 		--file r10k/$(dockerfile) \
 		--tag $(NAMESPACE)/r10k:$(VERSION) $(dockerfile_context)
-build: 
-	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) $(dockerfile_context)
 
 push-image: prep
 	@docker push $(NAMESPACE)/r10k:$(VERSION)
