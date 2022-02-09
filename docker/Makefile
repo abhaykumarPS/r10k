@@ -69,16 +69,6 @@ est: prep
 push-image:
 	docker buildx build --platform linux/arm64,linux/amd64 -t abhay900/r10k:latest -f r10k/$(dockerfile) $(dockerfile_context)
 
-push-readme:
-	@docker pull sheogorath/readme-to-dockerhub
-	@docker run --rm \
-		-v $(PWD)/README.md:/data/README.md \
-		-e DOCKERHUB_USERNAME="$(DOCKERHUB_USERNAME)" \
-		-e DOCKERHUB_PASSWORD="$(DOCKERHUB_PASSWORD)" \
-		-e DOCKERHUB_REPO_PREFIX=abhay900 \
-		-e DOCKERHUB_REPO_NAME=r10k \
-		sheogorath/readme-to-dockerhub
-
 publish: push-image push-readme
  
 	
