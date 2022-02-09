@@ -72,7 +72,7 @@ test: prep
 		rspec spec
 
 push-image: 
-	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(LATEST_VERSION) --push $(dockerfile_context)
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) --push $(dockerfile_context)
 
 
 push-readme:
