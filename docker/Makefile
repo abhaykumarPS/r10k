@@ -51,8 +51,7 @@ endif
 build: prep
 	docker pull alpine:$(alpine_version)
 	docker buildx build \
-		${DOCKER_BUILD_FLAGS} \
-		--load \
+		--platform linux/arm64,linux/amd64 \
 		--build-arg alpine_version=$(alpine_version) \
 		--build-arg vcs_ref=$(vcs_ref) \
 		--build-arg build_date=$(build_date) \
