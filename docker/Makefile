@@ -48,9 +48,21 @@ else
 	@docker run --rm -v $(PWD)/r10k/$(dockerfile):/Dockerfile -i $(hadolint_container) $(hadolint_command) Dockerfile
 endif
 
-build: 
-	docker buildx build --platform linux/arm64,linux/amd64 --file r10k/$(dockerfile) --tag $(NAMESPACE)/r10k:$(VERSION) $(dockerfile_context)
-
+build: prep
+	docker pull alpine:$(alpine_version)
+	docker buildx build \
+		${DOCKER_BUILD_FLAGS} \
+		--load \
+		--build-arg alpine_version=$(alpine_version) \
+		--build-arg vcs_ref=$(vcs_ref) \
+		--build-arg build_date=$(build_date) \
+		--build-arg version=$(VERSION) \
+		--build-arg pupperware_analytics_stream=$(PUPPERWARE_ANALYTICS_STREAM) \
+		--file r10k/$(dockerfile) \
+		--tag $(NAMESPACE)/r10k:$(VERSION) $(dockerfile_context)
+ifeq ($(IS_LATEST),true)
+	@docker tag $(NAMESPACE)/r10k:$(VERSION) puppet/r10k:$(LATEST_VERSION)
+endif
 
 test: prep
 	@bundle install --path $$BUNDLE_PATH --gemfile $$GEMFILE --with test
@@ -59,6 +71,23 @@ test: prep
 		bundle exec --gemfile $$GEMFILE \
 		rspec spec
 
-publish: push-image push-readme
+push-image: prep
+	@docker push $(NAMESPACE)/r10k:$(VERSION)
+ifeq ($(IS_LATEST),true)
+	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
+endif
+
+push-readme:
+	@docker pull sheogorath/readme-to-dockerhub
+	@docker run --rm \
+		-v $(PWD)/README.md:/data/README.md \
+		-e DOCKERHUB_USERNAME="$(DOCKERHUB_USERNAME)" \
+		-e DOCKERHUB_PASSWORD="$(DOCKERHUB_PASSWORD)" \
+		-e DOCKERHUB_REPO_PREFIX=puppet \
+		-e DOCKERHUB_REPO_NAME=r10k \
+		sheogorath/readme-to-dockerhub
+
+publish: 
+	docker buildx build --platform linux/arm64,linux/amd64 --file r10k/$(dockerfile) --tag $(NAMESPACE)/r10k:$(VERSION) $(dockerfile_context)
 
 .PHONY: lint build test prep publish push-image push-readme
