@@ -88,7 +88,7 @@ push-readme:
 		sheogorath/readme-to-dockerhub
 
 publish: 
-	docker buildx build --platform linux/arm64,linux/amd64 --file r10k/$(dockerfile) --tag $(NAMESPACE)/r10k:$(VERSION) $(dockerfile_context)
-	push-image
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) $(dockerfile_context)
+	@docker push $(NAMESPACE)/r10k:$(VERSION)
 
 .PHONY: lint build test prep publish push-image push-readme
