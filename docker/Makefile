@@ -1,5 +1,5 @@
 PUPPERWARE_ANALYTICS_STREAM ?= dev
-NAMESPACE ?= puppet
+NAMESPACE ?= abhay900
 git_describe = $(shell git describe --tags)
 vcs_ref := $(shell git rev-parse HEAD)
 build_date := $(shell date -u +%FT%T)
@@ -87,6 +87,7 @@ push-readme:
 		-e DOCKERHUB_REPO_NAME=r10k \
 		sheogorath/readme-to-dockerhub
 
-publish: push-image push-readme
+publish: 
+	docker buildx build --platform linux/arm64,linux/amd64 -t abhay900/r10k:$(VERSION) -f r10k/$(dockerfile) --push $(dockerfile_context) 
 
 .PHONY: lint build test prep publish push-image push-readme
