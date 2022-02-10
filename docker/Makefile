@@ -68,13 +68,11 @@ est: prep
 		bundle exec --gemfile $$GEMFILE \
 		rspec spec
 
-push-image: prep
+push-image: 
 	@docker push $(NAMESPACE)/r10k:$(VERSION)
-ifeq ($(IS_LATEST),true)
-	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
-endif	
+	
 
 publish: 
-	docker buildx build --platform linux/arm64,linux/amd64 -t abhay900/r10k:latest -f r10k/$(dockerfile) $(dockerfile_context) 
+	docker buildx build --platform linux/arm64,linux/amd64 -t abhay900/r10k:$(VERSION) -f r10k/$(dockerfile) $(dockerfile_context) 
 	
 .PHONY: lint build test prep publish push-image push-readme
