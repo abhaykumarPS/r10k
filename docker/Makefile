@@ -72,9 +72,9 @@ test: prep
 		rspec spec
 
 push-image: prep
-	@docker push $(NAMESPACE)/r10k:$(VERSION)
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) --push $(dockerfile_context) 
 ifeq ($(IS_LATEST),true)
-	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(LATEST_VERSION) -f r10k/$(dockerfile) --push $(dockerfile_context) 
 endif
 
 push-readme:
@@ -87,7 +87,6 @@ push-readme:
 		-e DOCKERHUB_REPO_NAME=r10k \
 		sheogorath/readme-to-dockerhub
 
-publish: 
-	docker buildx build --platform linux/arm64,linux/amd64 -t abhay900/r10k:$(VERSION) -f r10k/$(dockerfile) --push $(dockerfile_context) 
-
+publish: push-image push-readme
+	
 .PHONY: lint build test prep publish push-image push-readme
