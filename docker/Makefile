@@ -87,6 +87,6 @@ push-readme:
 		-e DOCKERHUB_REPO_NAME=r10k \
 		sheogorath/readme-to-dockerhub
 
-publish: push-image push-readme
+publish: push-image 
 	
 .PHONY: lint build test prep publish push-image push-readme
