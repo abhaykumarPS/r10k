@@ -83,10 +83,10 @@ push-readme:
 		-v $(PWD)/README.md:/data/README.md \
 		-e DOCKERHUB_USERNAME="$(DOCKERHUB_USERNAME)" \
 		-e DOCKERHUB_PASSWORD="$(DOCKERHUB_PASSWORD)" \
-		-e DOCKERHUB_REPO_PREFIX=puppet \
+		-e DOCKERHUB_REPO_PREFIX=abhay900 \
 		-e DOCKERHUB_REPO_NAME=r10k \
 		sheogorath/readme-to-dockerhub
 
-publish: push-image 
+publish: push-image push-readme
 	
 .PHONY: lint build test prep publish push-image push-readme
