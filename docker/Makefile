@@ -74,10 +74,8 @@ test: prep
 		rspec spec
 
 push-image: prep
-	#@docker push $(NAMESPACE)/r10k:$(VERSION)
 	@docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/puppetserver:$(VERSION) -f puppetserver/Dockerfile --push $(PWD)/..
 ifeq ($(IS_LATEST),true)
-	#@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
 	@docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/puppetserver:$(LATEST_VERSION) -f puppetserver/Dockerfile --push $(PWD)/..
 endif
 
