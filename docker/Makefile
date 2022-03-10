@@ -51,8 +51,10 @@ endif
 build: prep
 	docker pull alpine:$(alpine_version)
 	docker buildx build \
-	        --platform linux/arm64,linux/amd64 \
-	        --push \
+	        ${DOCKER_BUILD_FLAGS} \
+		--load \
+		--pull \
+		--build-arg build_type=$(BUILD_TYPE) \
 		--build-arg alpine_version=$(alpine_version) \
 		--build-arg vcs_ref=$(vcs_ref) \
 		--build-arg build_date=$(build_date) \
@@ -72,9 +74,11 @@ test: prep
 		rspec spec
 
 push-image: prep
-	@docker push $(NAMESPACE)/r10k:$(VERSION)
+	#@docker push $(NAMESPACE)/r10k:$(VERSION)
+	@docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/puppetserver:$(VERSION) -f puppetserver/Dockerfile --push $(PWD)/..
 ifeq ($(IS_LATEST),true)
-	@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
+	#@docker push $(NAMESPACE)/r10k:$(LATEST_VERSION)
+	@docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/puppetserver:$(LATEST_VERSION) -f puppetserver/Dockerfile --push $(PWD)/..
 endif
 
 push-readme:
