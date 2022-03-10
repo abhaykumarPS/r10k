@@ -50,7 +50,7 @@ endif
 
 build: prep
 	docker pull alpine:$(alpine_version)
-	docker buildx build --platform linux/arm64,linux/amd64 \
+	docker buildx build \
 		${DOCKER_BUILD_FLAGS} \
 		--load \
 		--build-arg alpine_version=$(alpine_version) \
@@ -71,11 +71,11 @@ test: prep
 		bundle exec --gemfile $$GEMFILE \
 		rspec spec
 
-#push-image: prep
-#	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) --push $(dockerfile_context) 
-#ifeq ($(IS_LATEST),true)
-#	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(LATEST_VERSION) -f r10k/$(dockerfile) --push $(dockerfile_context) 
-#endif
+push-image: prep
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(VERSION) -f r10k/$(dockerfile) --push $(dockerfile_context) 
+ifeq ($(IS_LATEST),true)
+	docker buildx build --platform linux/arm64,linux/amd64 -t $(NAMESPACE)/r10k:$(LATEST_VERSION) -f r10k/$(dockerfile) --push $(dockerfile_context) 
+endif
 
 push-readme:
 	@docker pull sheogorath/readme-to-dockerhub
